@@ -114,6 +114,6 @@ class VehicleState(SE2):
 class VehicleNode:
     """Defines a node in the search graph."""
     state: VehicleState
-    input: Optional[VehicleInput]
+    input: Optional[VehicleInput] = None
     parent: Optional['VehicleNode'] = None
     children: Optional[List['VehicleNode']] = None
