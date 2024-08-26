@@ -30,7 +30,7 @@ def test_straight_line_planner():
     
     sol1 = problem.solve()
     assert sol1 is not None
-    problem.render()  # uncomment to visualize the solution
+    # problem.render()  # uncomment to visualize the solution
 
     parked_car = ParkedCar(bounding_box_m = Polygon([(9, 40), (9, 46), (11, 46), (11, 40)]))
     scenario.add_object(parked_car)
