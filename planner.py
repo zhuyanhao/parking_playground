@@ -1,11 +1,12 @@
 """Defines the interface and data structure used by the planner."""
 
-from .vehicle import VehicleState, VehicleNode
+from .vehicle import VehicleState, VehicleNode, VehicleProperties
 from .scenario import ParkingScenario
 
 from dataclasses import dataclass
 from typing import Optional
 import abc
+from matplotlib import axes
 
 class PlanningStartPose(VehicleState):
     """The planning start pose of the vehicle."""
@@ -32,11 +33,11 @@ class Planner(abc.ABC):
     """The interface for a planner."""
 
     @abc.abstractmethod
-    def plan(self, start: VehicleState, goal: PlanningGoalPose, scenario: ParkingScenario) -> Optional[VehicleNode]:
+    def plan(self, ego: VehicleProperties, start: VehicleState, goal: PlanningGoalPose, scenario: ParkingScenario) -> Optional[VehicleNode]:
         """Given the scenario and start & goal pose, return the last node of the optimal path if it exists."""
         return None
     
     @abc.abstractmethod
-    def render(self, scenario) -> None:
+    def render(self, ax: axes.Axes, ego: VehicleProperties) -> None:
         """Render the planning process and result."""
         pass

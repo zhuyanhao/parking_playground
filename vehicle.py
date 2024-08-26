@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional, List
 import math
 import numpy as np
+from shapely import Polygon
 
 @dataclass(frozen=True)
 class VehicleProperties:
@@ -14,7 +15,8 @@ class VehicleProperties:
     """
     wheelbase_m: float = 2.5
     front_wheel_angle_limit_rad: float = math.radians(30)
-    rear_wheel_angle_limit_rad: Optional[float] = None
+    rear_wheel_angle_limit_rad: float = 0.0  # no rear wheel steering by default
+    geometry: Optional[Polygon] = None
 
     def __post_init__(self):
         """Check if all properties are set correctly.

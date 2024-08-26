@@ -1,7 +1,7 @@
 """Implement the object that defines a parking scenario."""
 
 from .objects import *
-from .vehicle import VehicleState
+from .vehicle import VehicleState, VehicleProperties
 from .objects import convert_index_to_xy
 
 from dataclasses import dataclass
@@ -28,25 +28,25 @@ class ParkingScenarioParameters:
 class ParkingScenario:
     """Defines a parking scenario."""
 
-    def __init__(self, params: ParkingScenarioParameters, ego_geometry: Polygon) -> None:
+    def __init__(self, params: ParkingScenarioParameters) -> None:
         """Initialize the scenario."""
 
         self._grid_size_m = params.grid_size_m
         # x-axis: row direction, y-axis: column direction
         self._map = np.zeros((params.num_rows, params.num_cols), dtype=int)
         self._objects: List[ParkingObject] = []
-        self._ego_geometry: Polygon = ego_geometry
-    
+
     def add_object(self, object: ParkingObject) -> None:
         """Add an object to the scenario and update its map."""
         self._objects.append(object)
         object.update_map(self._map, self._grid_size_m)
 
-    def in_collision(self, ego_state: VehicleState) -> bool:
+    def in_collision(self, ego_state: VehicleState, ego_geometry: Polygon) -> bool:
         """Check if the vehicle is in collision with any other objects.
         
         Args:
             ego_state: the current ego state/pose at which the collision is checked.
+            ego_geometry: collision model defined in ego frame
             
         Returns:
             True if in collision and False otherwise.
@@ -58,7 +58,7 @@ class ParkingScenario:
             transformed_augmented_data = ego_state.to_matrix().dot(augmented_data)[:-1, :]
             return transformed_augmented_data.T
 
-        transformed_ego_geometry = transform(self._ego_geometry, transform_polygon)
+        transformed_ego_geometry = transform(ego_geometry, transform_polygon)
 
         num_rows, num_cols = self._map.shape
         for row in range(num_rows):
@@ -72,5 +72,8 @@ class ParkingScenario:
     
     def render(self, ax: axes.Axes) -> None:
         """Render all objects in this scenario on the given axes."""
+        ax.set_xlim((0.0, (self._map.shape[0] + 1) * self._grid_size_m))
+        ax.set_ylim((0.0, (self._map.shape[1] + 1) * self._grid_size_m))
+
         for object in self._objects:
             object.render(ax)

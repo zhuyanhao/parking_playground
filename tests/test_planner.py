@@ -1,6 +1,7 @@
 """Test everything in planner.py."""
 
 from ..planner import *
+from ..planners.straight_line_planner import StraightLinePlanner
 
 import pytest
 
