@@ -6,6 +6,7 @@ from enum import IntEnum
 from typing import Any, Tuple
 import numpy as np
 from shapely import Point, Polygon
+from matplotlib import axes
 
 class ObjectType(IntEnum):
     """Enumeration of all possible object types.
@@ -39,6 +40,11 @@ class ParkingObject(abc.ABC):
             grid_size_m: the grid size of the map.
         """
         return
+    
+    @abc.abstractmethod
+    def render(self, ax: axes.Axes) -> None:
+        """Render the current object on the given matplotlib axes."""
+        return
 
 def convert_index_to_xy(row: int, col: int, grid_size_m: float) -> Tuple[float, float]:
     """Convert row and column index into the x&y coordinate of the grid center."""
@@ -51,7 +57,7 @@ def convert_index_to_xy(row: int, col: int, grid_size_m: float) -> Tuple[float, 
 class ParkedCar(ParkingObject):
     """Object representing a parked car."""
     
-    bounding_box_m: Polygon
+    bounding_box_m: Polygon  # in world/map frame
     render_color = 'r'
 
     def get_object_type(self) -> ObjectType:
@@ -72,3 +78,7 @@ class ParkedCar(ParkingObject):
                 
                 if self.bounding_box_m.contains(Point(cell_x, cell_y)):
                     parking_map[row][col] = max(parking_map[row][col], self.get_object_type())
+
+    def render(self, ax: axes.Axes) -> None:
+        """Render parked car on the given axis."""
+        ax.fill(*self.bounding_box_m.exterior.xy, color=self.render_color)

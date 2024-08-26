@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import List
 import numpy as np
 from shapely import Polygon, transform
+from matplotlib import axes
 
 @dataclass(frozen=True)
 class ParkingScenarioParameters:
@@ -68,3 +69,8 @@ class ParkingScenario:
                     return True
         
         return False
+    
+    def render(self, ax: axes.Axes) -> None:
+        """Render all objects in this scenario on the given axes."""
+        for object in self._objects:
+            object.render(ax)
