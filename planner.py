@@ -22,6 +22,12 @@ class PlanningGoalPose:
         if self.tolerance.x_m < 0 or self.tolerance.y_m < 0 or self.tolerance.yaw_rad < 0:
             raise ValueError('Tolerance must be non negative.')
         
+    def in_goal_region(self, state: VehicleState) -> bool:
+        """Check if the state is in the goal region."""
+        return abs(state.x_m - self.goal.x_m) <= self.tolerance.x_m and \
+            abs(state.y_m - self.goal.y_m) <= self.tolerance.y_m and \
+            abs(state.yaw_rad - self.goal.yaw_rad) <= self.tolerance.yaw_rad
+        
 class Planner(abc.ABC):
     """The interface for a planner."""
 
